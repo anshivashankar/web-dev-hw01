@@ -3,7 +3,7 @@ server {
     listen [::]:80;
 
     # TODO - DONE: This should be your server name.
-    server_name hw02a.shivashankar.net;
+    server_name hw02b.shivashankar.net;
 
     location / {
         proxy_pass http://localhost:4790;

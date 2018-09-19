@@ -15,7 +15,7 @@ config :practice, PracticeWeb.Endpoint,
   cache_static_manifest: "priv/static/cache_manifest.json",
   root: ".",
   version: Application.spec(:phoenix_distillery, :vsn),
-  url: [host: "hw02a.shivashankar.net", port: 80]
+  url: [host: "hw02b.shivashankar.net", port: 80]
 
 # TODO - DONE: Correct the above URL for deployment.
 
