@@ -20,7 +20,8 @@ defmodule PracticeWeb.Router do
     post "/double", PageController, :double
     post "/calc", PageController, :calc
     post "/factor", PageController, :factor
-    # TODO: Palindrome route
+    post "/palindrome", PageController, :palindrome
+    # TODO - DONE: Palindrome route
   end
 
   # Other scopes may use custom stacks.

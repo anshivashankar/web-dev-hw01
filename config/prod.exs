@@ -15,9 +15,9 @@ config :practice, PracticeWeb.Endpoint,
   cache_static_manifest: "priv/static/cache_manifest.json",
   root: ".",
   version: Application.spec(:phoenix_distillery, :vsn),
-  url: [host: "practice2.ironbeard.com", port: 80]
+  url: [host: "hw02a.shivashankar.net", port: 80]
 
-# TODO: Correct the above URL for deployment.
+# TODO - DONE: Correct the above URL for deployment.
 
 # Do not print debug messages in production
 config :logger, level: :info
