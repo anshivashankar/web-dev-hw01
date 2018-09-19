@@ -15,21 +15,10 @@ defmodule Practice.Calc do
     |> String.split(~r/\s+/)
     |> tag_tokens
     |> convert_postfix
-    #|> Enum.reverse
     |> tag_tokens
     |> IO.inspect
     |> stack_calculate([])
-    #|> hd
-    #|> parse_float
-    #|> :math.sqrt()
 
-    # Hint:
-    # expr
-    # |> split
-    # |> tag_tokens  (e.g. [+, 1] => [{:op, "+"}, {:num, 1.0}]
-    # |> convert to postfix
-    # |> reverse to prefix
-    # |> evaluate as a stack calculator using pattern matching
   end
 
   # Convert this expression to list of tuples with their atoms.
