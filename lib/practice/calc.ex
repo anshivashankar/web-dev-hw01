@@ -15,6 +15,10 @@ defmodule Practice.Calc do
     |> String.split(~r/\s+/)
     |> tag_tokens
     |> convert_postfix
+    #|> Enum.reverse
+    |> tag_tokens
+    |> IO.inspect
+    |> stack_calculate([])
     #|> hd
     #|> parse_float
     #|> :math.sqrt()
@@ -94,16 +98,14 @@ defmodule Practice.Calc do
 
               # here we know that we're either +/-, and encountered * or /
               List.last(opStack) in ["*", "/"] ->
-                # pop the any that arent * or / and put it into output.
-                #output = output ++ Enum.reverse(opStack)
-                #[]
-                #{output ++ Enum.reverse(opStack), []}
-                convert_postfix_help(listOfTuples, output ++ Enum.reverse(opStack), [], index)
+                # pop until we've reached + or - and next up is a * or /.
+                convert_postfix_help(listOfTuples, output ++ Enum.reverse(opStack), [elem(tuple, 1)], index)
           
-              # if its another + or -, add it on. (thats the only other option)
+              # if its another + or -, use left-to-right precedence order.
               List.last(opStack) in ["+", "-"] ->
                 #{output, opStack ++ [elem(tuple, 1)]}
-                convert_postfix_help(listOfTuples, output, opStack ++ [elem(tuple, 1)], index)
+                #convert_postfix_help(listOfTuples, output, opStack ++ [elem(tuple, 1)], index)
+                convert_postfix_help(listOfTuples, output ++ [List.last(opStack)], List.replace_at(opStack, length(opStack) - 1, elem(tuple, 1)), index)
 
               true ->
                 IO.puts("should never come here.")
@@ -113,9 +115,14 @@ defmodule Practice.Calc do
 
           # just add to stack for * and /, we have no higher order expressions, like parenthesis or exponents.
           {:op, operation} when operation in ["*", "/"] ->
-            #{output, opStack ++ [elem(tuple, 1)]}
-            convert_postfix_help(listOfTuples, output, opStack ++ [elem(tuple, 1)], index)
-
+            cond do
+              # if its * or /, use left-to-right precedence order.
+              List.last(opStack) in ["*", "/"] ->
+                convert_postfix_help(listOfTuples, output ++ [List.last(opStack)], List.replace_at(opStack, length(opStack) - 1, elem(tuple, 1)), index)
+              true ->
+                #{output, opStack ++ [elem(tuple, 1)]}
+                convert_postfix_help(listOfTuples, output, opStack ++ [elem(tuple, 1)], index)
+            end
           _ -> 
             IO.puts("Should never come here.")
             #{output, opStack}
@@ -123,6 +130,36 @@ defmodule Practice.Calc do
         end
     end
     #output ++ Enum.reverse(opStack)
+  end
+
+  # tagged_output is the Arithmatic Expression. result is a list of numbers.
+  def stack_calculate(tagged_output, result) do
+    IO.inspect(result)
+    cond do
+      Enum.empty?(tagged_output) -> 
+        hd(result)
+      true -> 
+        case hd(tagged_output) do
+          {:num, number} -> stack_calculate(tl(tagged_output), [parse_float(number) | result])
+          {:op, operator} -> stack_calculate(tl(tagged_output), eval(result, operator))
+          _ -> 
+            IO.puts("This shouldn't happen. Should be tagged appropriately.")
+            stack_calculate(tl(tagged_output), result)
+        end
+    end
+  end
+
+  # should be only 2 operands in result. Otherwise, algorithm went wrong.
+  def eval(result, operator) do
+    first = Enum.at(result, 0)
+    second = Enum.at(result, 1)
+    popped = tl(tl(result))
+    case operator do
+      "+" -> [second + first | popped]
+      "-" -> [second - first | popped]
+      "*" -> [second * first | popped]
+      "/" -> [second / first | popped]
+    end
   end
 
 end
