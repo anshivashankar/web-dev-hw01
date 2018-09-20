@@ -35,11 +35,7 @@ defmodule Practice.Calc do
   end
 
   def convert_postfix(listOfTuples) do
-    opStack = []
-    output = []
-    
-    convert_postfix_help(listOfTuples, output, opStack, -1)
-    
+    convert_postfix_help(listOfTuples, [], [], -1)
   end
 
   def convert_postfix_help(listOfTuples, output, opStack, index) do
@@ -51,24 +47,24 @@ defmodule Practice.Calc do
         tuple = Enum.at(listOfTuples, index)
         case tuple do
           # it's a number
-          {:num, _} -> 
-            convert_postfix_help(listOfTuples, output ++ [elem(tuple, 1)], opStack, index)
+          {:num, number} -> 
+            convert_postfix_help(listOfTuples, output ++ [number], opStack, index)
 
           # its an operation, + or -
           {:op, operation} when operation in ["+", "-"] ->
             cond do
               # if its empty, then add on to the stack.
               Enum.empty?(opStack) ->
-                convert_postfix_help(listOfTuples, output, opStack ++ [elem(tuple, 1)], index)
+                convert_postfix_help(listOfTuples, output, opStack ++ [operation], index)
 
               # here we know that we're either +/-, and encountered * or /
               List.last(opStack) in ["*", "/"] ->
                 # pop until we've reached + or - and next up is a * or /.
-                convert_postfix_help(listOfTuples, output ++ Enum.reverse(opStack), [elem(tuple, 1)], index)
+                convert_postfix_help(listOfTuples, output ++ Enum.reverse(opStack), [operation], index)
           
               # if its another + or -, use left-to-right precedence order.
               List.last(opStack) in ["+", "-"] ->
-                convert_postfix_help(listOfTuples, output ++ [List.last(opStack)], List.replace_at(opStack, length(opStack) - 1, elem(tuple, 1)), index)
+                convert_postfix_help(listOfTuples, output ++ [List.last(opStack)], List.replace_at(opStack, length(opStack) - 1, operation), index)
 
               true ->
                 IO.puts("should never come here.")
@@ -80,9 +76,9 @@ defmodule Practice.Calc do
             cond do
               # if its * or /, use left-to-right precedence order.
               List.last(opStack) in ["*", "/"] ->
-                convert_postfix_help(listOfTuples, output ++ [List.last(opStack)], List.replace_at(opStack, length(opStack) - 1, elem(tuple, 1)), index)
+                convert_postfix_help(listOfTuples, output ++ [List.last(opStack)], List.replace_at(opStack, length(opStack) - 1, operation), index)
               true ->
-                convert_postfix_help(listOfTuples, output, opStack ++ [elem(tuple, 1)], index)
+                convert_postfix_help(listOfTuples, output, opStack ++ [operation], index)
             end
           _ -> 
             IO.puts("Should never come here.")
@@ -107,7 +103,7 @@ defmodule Practice.Calc do
     end
   end
 
-  # should be only 2 operands in result. Otherwise, algorithm went wrong.
+  # should be at least 2 operands in result. Otherwise, algorithm went wrong.
   def eval(result, operator) do
     first = Enum.at(result, 0)
     second = Enum.at(result, 1)

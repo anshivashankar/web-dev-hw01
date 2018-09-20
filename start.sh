@@ -20,8 +20,8 @@ echo "Starting app..."
 
 _build/prod/rel/practice/bin/practice start
 
-# TODO: Change "foreground" to "Start"
+# TODO - DONE: Change "foreground" to "Start"
 
-# TODO: Add a cron rule or systemd service file
+# TODO - DONE: Add a cron rule or systemd service file
 #       to start your app on system boot.
 

@@ -26,5 +26,5 @@ defmodule PracticeWeb.PageControllerTest do
     assert html_response(conn, 200) =~ "true"
   end
 
-  # TODO: Write a controller test for palindrome.
+  # TODO - DONE: Write a controller test for palindrome.
 end
