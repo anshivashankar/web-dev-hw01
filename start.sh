@@ -14,6 +14,8 @@ export PORT=4790
 
 echo "Stopping old copy of app, if any..."
 
+cd /home/elixiruser/web-dev-hw02/
+
 _build/prod/rel/practice/bin/practice stop || true
 
 echo "Starting app..."
