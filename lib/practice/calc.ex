@@ -16,7 +16,6 @@ defmodule Practice.Calc do
     |> tag_tokens
     |> convert_postfix
     |> tag_tokens
-    |> IO.inspect
     |> stack_calculate([])
 
   end
@@ -25,10 +24,6 @@ defmodule Practice.Calc do
   def tag_tokens(chars) do
     chars
     |> Enum.map(&assign_atom/1)
-    #|> IO.inspect
-    #listOfTuples = [{:num, hd(chars)}, {:op, hd(chars)}]
-    #IO.puts(Enum.join(Tuple.to_list(listOfTuples)))
-    #chars
   end
 
   def assign_atom(char) do
@@ -42,22 +37,8 @@ defmodule Practice.Calc do
   def convert_postfix(listOfTuples) do
     opStack = []
     output = []
-    #index = 0
-
-    # get char
-    # if it's a number;
-    # add it to the output.
-    # if it's an operation;
-    # compare precedence to the op on the top of the opStack.
-    # If it's greater, push it on to the opStack.
-    # If it's lower, 
-    # pop operators from opStack UNTIL
-    # it's empty. OR
-    # the op on opStack is strictly less than that of the current operator.
-    
     
     convert_postfix_help(listOfTuples, output, opStack, -1)
-    |>IO.inspect
     
   end
 
@@ -67,14 +48,10 @@ defmodule Practice.Calc do
       index == length(listOfTuples) ->
         output ++ Enum.reverse(opStack)
       true ->
-        #index = index + 1
         tuple = Enum.at(listOfTuples, index)
-        |> IO.inspect
         case tuple do
           # it's a number
           {:num, _} -> 
-            #{output ++ [elem(tuple, 1)], opStack}
-            #|> IO.inspect
             convert_postfix_help(listOfTuples, output ++ [elem(tuple, 1)], opStack, index)
 
           # its an operation, + or -
@@ -82,7 +59,6 @@ defmodule Practice.Calc do
             cond do
               # if its empty, then add on to the stack.
               Enum.empty?(opStack) ->
-                #{output, opStack ++ [elem(tuple, 1)]}
                 convert_postfix_help(listOfTuples, output, opStack ++ [elem(tuple, 1)], index)
 
               # here we know that we're either +/-, and encountered * or /
@@ -92,13 +68,10 @@ defmodule Practice.Calc do
           
               # if its another + or -, use left-to-right precedence order.
               List.last(opStack) in ["+", "-"] ->
-                #{output, opStack ++ [elem(tuple, 1)]}
-                #convert_postfix_help(listOfTuples, output, opStack ++ [elem(tuple, 1)], index)
                 convert_postfix_help(listOfTuples, output ++ [List.last(opStack)], List.replace_at(opStack, length(opStack) - 1, elem(tuple, 1)), index)
 
               true ->
                 IO.puts("should never come here.")
-                #{output, opStack}
                 convert_postfix_help(listOfTuples, output, opStack, index)
             end
 
@@ -109,21 +82,17 @@ defmodule Practice.Calc do
               List.last(opStack) in ["*", "/"] ->
                 convert_postfix_help(listOfTuples, output ++ [List.last(opStack)], List.replace_at(opStack, length(opStack) - 1, elem(tuple, 1)), index)
               true ->
-                #{output, opStack ++ [elem(tuple, 1)]}
                 convert_postfix_help(listOfTuples, output, opStack ++ [elem(tuple, 1)], index)
             end
           _ -> 
             IO.puts("Should never come here.")
-            #{output, opStack}
             convert_postfix_help(listOfTuples, output, opStack, index)
         end
     end
-    #output ++ Enum.reverse(opStack)
   end
 
   # tagged_output is the Arithmatic Expression. result is a list of numbers.
   def stack_calculate(tagged_output, result) do
-    IO.inspect(result)
     cond do
       Enum.empty?(tagged_output) -> 
         hd(result)
